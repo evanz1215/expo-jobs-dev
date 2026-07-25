@@ -1,4 +1,5 @@
 import { Text, View } from "react-native";
+import { Button } from "react-native-paper";
 
 export default function Index() {
   return (
@@ -7,9 +8,11 @@ export default function Index() {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        gap: 20,
       }}
     >
       <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Button mode="contained">React native paper button</Button>
     </View>
   );
 }
