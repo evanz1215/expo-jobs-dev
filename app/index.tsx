@@ -1,18 +1,24 @@
-import { Text, View } from "react-native";
-import { Button } from "react-native-paper";
+import CustomButton from "@/components/ui/custom-button";
+import CustomInput from "@/components/ui/custom-input";
+import { Text } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Index() {
   return (
-    <View
+    <SafeAreaView
       style={{
         flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        padding: 20,
         gap: 20,
       }}
     >
       <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Button mode="contained">React native paper button</Button>
-    </View>
+      <CustomButton mode="contained">React native paper button</CustomButton>
+      <CustomInput
+        label="Username"
+        placeholder="Enter your username"
+        errorMessage="11"
+      />
+    </SafeAreaView>
   );
 }
