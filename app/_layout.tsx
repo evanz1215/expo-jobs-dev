@@ -3,6 +3,7 @@ import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { MD3LightTheme, PaperProvider } from "react-native-paper";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 export default function RootLayout() {
   const customTheme = {
@@ -22,6 +23,7 @@ export default function RootLayout() {
             headerShown: false,
           }}
         />
+        <Toast position="top" topOffset={50} />
       </PaperProvider>
     </SafeAreaProvider>
   );
