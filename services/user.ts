@@ -39,3 +39,47 @@ export const registerUser = async (payload: Partial<IUser>) => {
     throw error;
   }
 };
+
+export const loginUser = async (payload: {
+  email: string;
+  password: string;
+  role: string;
+}) => {
+  try {
+    // step 1 : sign in user with supabase auth
+    const response = await supabaseConfig.auth.signInWithPassword({
+      email: payload.email,
+      password: payload.password,
+    });
+
+    if (response.error) {
+      throw response.error;
+    }
+
+    const email = response.data.user?.email;
+
+    const dbRecord = await supabaseConfig
+      .from("user_profiles")
+      .select("*")
+      .eq("email", email)
+      .single();
+
+    if (dbRecord.error) {
+      throw dbRecord.error;
+    }
+
+    const user = dbRecord.data as IUser;
+
+    if (user.role !== payload.role) {
+      throw new Error("User role does not match");
+    }
+
+    return {
+      success: true,
+      data: user,
+      message: "User logged in successfully.",
+    };
+  } catch (error) {
+    throw error;
+  }
+};

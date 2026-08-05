@@ -4,12 +4,15 @@ import CustomInput from "@/components/ui/custom-input";
 import CustomText from "@/components/ui/custom-text";
 import FlexBox from "@/components/ui/flexbox";
 import { PRIMARY_COLOR, USER_ROLES } from "@/constants";
-import { useRouter } from "expo-router";
+import { IUser } from "@/interfaces";
+import { loginUser } from "@/services/user";
+import { Href, useRouter } from "expo-router";
 
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Pressable, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-toast-message";
 
 const LoginScreen = () => {
   const router = useRouter();
@@ -25,7 +28,49 @@ const LoginScreen = () => {
       role: "",
     },
   });
-  const onSubmit = (data: any) => console.log(data);
+
+  const [loading, setLoading] = useState(false);
+  const onSubmit = async (data: any) => {
+    try {
+      setLoading(true);
+
+      const response = await loginUser(data);
+
+      if (response.success) {
+        const routes: Record<IUser["role"], Href> = {
+          job_seeker: "/(private)/job-seeker/home",
+          recruiter: "/(private)/recruiter/home",
+        };
+
+        Toast.show({
+          type: "success",
+          text1: "Login successful",
+          text2: response.message,
+        });
+
+        setTimeout(() => {
+          router.push(routes[data.role as IUser["role"]]);
+        }, 1000);
+      } else {
+        console.error(response.message);
+
+        Toast.show({
+          type: "error",
+          text1: "Login failed",
+          text2: response.message,
+        });
+      }
+    } catch (error: any) {
+      console.error(error.message);
+      Toast.show({
+        type: "error",
+        text1: "Login failed",
+        text2: error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
@@ -116,8 +161,8 @@ const LoginScreen = () => {
                 name="password"
               />
 
-              <CustomButton onPress={handleSubmit(onSubmit)}>
-                Login
+              <CustomButton disabled={loading} onPress={handleSubmit(onSubmit)}>
+                {loading ? "Loading..." : "Login"}
               </CustomButton>
 
               <FlexBox flexDirection="row" justifyContent="center" gap={5}>
